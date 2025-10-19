@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>樊公酒 - 千年汉风，一脉清香</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bronze-dark: #2C1810;
+            --jade-light: #E8DCC0;
+            --gold-accent: #D4AF37;
+            --cream-bg: #F5F2E8;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--cream-bg);
+            color: var(--bronze-dark);
+        }
+        
+        .hero-title {
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 900;
+        }
+        
+        .section-title {
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 700;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(rgba(44, 24, 16, 0.3), rgba(44, 24, 16, 0.5)), url('./resources/hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .gold-accent {
+            color: var(--gold-accent);
+        }
+        
+        .bronze-bg {
+            background-color: var(--bronze-dark);
+        }
+        
+        .jade-bg {
+            background-color: var(--jade-light);
+        }
+        
+        .gold-bg {
+            background-color: var(--gold-accent);
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(245, 242, 232, 0.9);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(44, 24, 16, 0.2);
+        }
+        
+        .timeline-item {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        
+        .timeline-item.animate {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+        
+        .particle-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold-accent);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s ease;
+        }
+        
+        .splide__arrow {
+            background: var(--gold-accent) !important;
+            opacity: 0.8;
+        }
+        
+        .splide__arrow:hover {
+            opacity: 1;
+        }
+        
+        .splide__pagination__page.is-active {
+            background: var(--gold-accent) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-blur transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold gold-accent">樊公酒</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="index.html" class="text-gray-800 hover:gold-accent px-3 py-2 text-sm font-medium transition-colors">首页</a>
+                        <a href="products.html" class="text-gray-600 hover:gold-accent px-3 py-2 text-sm font-medium transition-colors">产品系列</a>
+                        <a href="culture.html" class="text-gray-600 hover:gold-accent px-3 py-2 text-sm font-medium transition-colors">品牌文化</a>
+                        <a href="contact.html" class="text-gray-600 hover:gold-accent px-3 py-2 text-sm font-medium transition-colors">联系我们</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-gray-600 hover:text-gray-800 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div class="particle-container" id="particles"></div>
+        <div class="text-center text-white z-10 max-w-4xl mx-auto px-4">
+            <div class="mb-8">
+                <img src="./resources/fan-kuai-portrait.jpg" alt="樊哙肖像" class="w-32 h-32 mx-auto rounded-full border-4 border-gold-accent mb-6 opacity-0" id="hero-image">
+            </div>
+            <h1 class="hero-title text-5xl md:text-7xl mb-6 opacity-0" id="hero-title">
+                樊公酒
+            </h1>
+            <h2 class="hero-title text-2xl md:text-4xl mb-8 gold-accent opacity-0" id="hero-subtitle">
+                千年汉风，一脉清香
+            </h2>
+            <p class="text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed opacity-0" id="hero-description">
+                源于汉高祖刘邦赐名的宫廷御酒，传承樊哙忠勇精神，以汉代古法酿造，历经千年而不衰的中华美酒传奇
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center opacity-0" id="hero-buttons">
+                <a href="products.html" class="gold-bg text-bronze-dark px-8 py-3 rounded-full font-medium hover:bg-yellow-500 transition-all duration-300 transform hover:scale-105">
+                    探索产品
+                </a>
+                <a href="culture.html" class="border-2 border-gold-accent text-gold-accent px-8 py-3 rounded-full font-medium hover:bg-gold-accent hover:text-bronze-dark transition-all duration-300">
+                    品牌文化
+                </a>
+            </div>
+        </div>
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Brand Story Section -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 gold-accent">品牌故事</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">传承千年的忠勇精神，酿造永恒的汉风美酒</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+                <div class="order-2 md:order-1">
+                    <h3 class="text-2xl font-bold mb-6 gold-accent">鸿门宴上的忠勇传奇</h3>
+                    <p class="text-gray-700 leading-relaxed mb-6">
+                        公元前206年，鸿门宴上危机四伏。当刘邦性命堪忧之时，大将樊哙带剑拥盾闯入军门，瞋目视项王，头发上指，目眦尽裂。项羽赐其一斗卮酒，樊哙立而饮之，其豪迈气概震慑全场，成功化解了刘邦的危机。
+                    </p>
+                    <p class="text-gray-700 leading-relaxed mb-6">
+                        为表彰樊哙的忠勇，汉高祖刘邦特将宫廷御酒赐名"樊公酒"。从此，这款承载着君臣情谊与英雄气概的美酒，成为了汉代宫廷的象征，流传至今。
+                    </p>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gold-bg rounded-full flex items-center justify-center">
+                            <span class="text-bronze-dark font-bold">忠</span>
+                        </div>
+                        <div class="w-12 h-12 gold-bg rounded-full flex items-center justify-center">
+                            <span class="text-bronze-dark font-bold">勇</span>
+                        </div>
+                        <div class="w-12 h-12 gold-bg rounded-full flex items-center justify-center">
+                            <span class="text-bronze-dark font-bold">诚</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-1 md:order-2">
+                    <img src="./resources/han-culture-elements.jpg" alt="汉代文化元素" class="w-full rounded-lg shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="py-20 jade-bg scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 gold-accent">精选产品</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">传承汉代古法，匠心酿造的精品白酒</p>
+            </div>
+            
+            <div class="splide" id="product-slider">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        <li class="splide__slide">
+                            <div class="card-hover bg-white rounded-lg shadow-lg overflow-hidden mx-4">
+                                <img src="./resources/product-collection.jpg" alt="樊公酒·经典系列" class="w-full h-64 object-cover">
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold mb-2 gold-accent">樊公酒·经典系列</h3>
+                                    <p class="text-gray-600 mb-4">传承汉代宫廷秘方，采用古法酿造，口感醇厚，回味悠长。</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-2xl font-bold text-bronze-dark">¥888</span>
+                                        <button class="gold-bg text-bronze-dark px-4 py-2 rounded-full text-sm font-medium hover:bg-yellow-500 transition-colors">
+                                            了解详情
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="splide__slide">
+                            <div class="card-hover bg-white rounded-lg shadow-lg overflow-hidden mx-4">
+                                <img src="./resources/product-collection.jpg" alt="樊公酒·珍藏系列" class="w-full h-64 object-cover">
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold mb-2 gold-accent">樊公酒·珍藏系列</h3>
+                                    <p class="text-gray-600 mb-4">精选优质原料，经过长时间陈酿，具有独特的收藏价值。</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-2xl font-bold text-bronze-dark">¥1688</span>
+                                        <button class="gold-bg text-bronze-dark px-4 py-2 rounded-full text-sm font-medium hover:bg-yellow-500 transition-colors">
+                                            了解详情
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="splide__slide">
+                            <div class="card-hover bg-white rounded-lg shadow-lg overflow-hidden mx-4">
+                                <img src="./resources/product-collection.jpg" alt="樊公酒·纪念系列" class="w-full h-64 object-cover">
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold mb-2 gold-accent">樊公酒·纪念系列</h3>
+                                    <p class="text-gray-600 mb-4">限量版纪念酒款，包装精美，适合收藏和送礼。</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-2xl font-bold text-bronze-dark">¥2888</span>
+                                        <button class="gold-bg text-bronze-dark px-4 py-2 rounded-full text-sm font-medium hover:bg-yellow-500 transition-colors">
+                                            了解详情
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 gold-accent">品牌历史</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">跨越两千年的传承与坚守</p>
+            </div>
+            
+            <div class="relative">
+                <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full gold-bg"></div>
+                
+                <div class="timeline-item mb-16">
+                    <div class="flex items-center">
+                        <div class="w-1/2 pr-8 text-right">
+                            <h3 class="text-xl font-bold mb-2 gold-accent">公元前206年</h3>
+                            <p class="text-gray-600">鸿门宴上，樊哙饮酒护主，刘邦赐名"樊公酒"</p>
+                        </div>
+                        <div class="w-8 h-8 gold-bg rounded-full border-4 border-white shadow-lg z-10"></div>
+                        <div class="w-1/2 pl-8"></div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item mb-16">
+                    <div class="flex items-center">
+                        <div class="w-1/2 pr-8"></div>
+                        <div class="w-8 h-8 gold-bg rounded-full border-4 border-white shadow-lg z-10"></div>
+                        <div class="w-1/2 pl-8">
+                            <h3 class="text-xl font-bold mb-2 gold-accent">汉代盛世</h3>
+                            <p class="text-gray-600">成为宫廷御用酒，享誉天下</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item mb-16">
+                    <div class="flex items-center">
+                        <div class="w-1/2 pr-8 text-right">
+                            <h3 class="text-xl font-bold mb-2 gold-accent">传承千年</h3>
+                            <p class="text-gray-600">樊氏后人守护酿酒技艺，代代相传</p>
+                        </div>
+                        <div class="w-8 h-8 gold-bg rounded-full border-4 border-white shadow-lg z-10"></div>
+                        <div class="w-1/2 pl-8"></div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="flex items-center">
+                        <div class="w-1/2 pr-8"></div>
+                        <div class="w-8 h-8 gold-bg rounded-full border-4 border-white shadow-lg z-10"></div>
+                        <div class="w-1/2 pl-8">
+                            <h3 class="text-xl font-bold mb-2 gold-accent">现代复兴</h3>
+                            <p class="text-gray-600">樊公酒业成立，古法酿造重现世间</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Culture Section -->
+    <section class="py-20 bronze-bg text-white scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 gold-accent">汉风文化</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">传承汉代文化精髓，弘扬中华传统美德</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-20 h-20 gold-bg rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-3xl text-bronze-dark">忠</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 gold-accent">忠诚精神</h3>
+                    <p class="text-gray-300 leading-relaxed">秉承樊哙对汉室的忠诚，坚守品质承诺，以诚待人</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-20 h-20 gold-bg rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-3xl text-bronze-dark">酿</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 gold-accent">古法酿造</h3>
+                    <p class="text-gray-300 leading-relaxed">传承汉代宫廷酿酒技艺，纯粮固态发酵，匠心独运</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-20 h-20 gold-bg rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-3xl text-bronze-dark">韵</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 gold-accent">清雅韵味</h3>
+                    <p class="text-gray-300 leading-relaxed">清香纯正，醇厚甘甜，回味悠长，不上头的优质口感</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="culture.html" class="inline-block gold-bg text-bronze-dark px-8 py-3 rounded-full font-medium hover:bg-yellow-500 transition-all duration-300 transform hover:scale-105">
+                    深入了解汉文化
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold gold-accent mb-4">樊公酒</h3>
+                <p class="text-gray-400 mb-6">千年汉风，一脉清香</p>
+                <div class="flex justify-center space-x-6 mb-6">
+                    <a href="index.html" class="text-gray-400 hover:gold-accent transition-colors">首页</a>
+                    <a href="products.html" class="text-gray-400 hover:gold-accent transition-colors">产品系列</a>
+                    <a href="culture.html" class="text-gray-400 hover:gold-accent transition-colors">品牌文化</a>
+                    <a href="contact.html" class="text-gray-400 hover:gold-accent transition-colors">联系我们</a>
+                </div>
+                <p class="text-gray-500 text-sm">© 2024 樊公酒业. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
